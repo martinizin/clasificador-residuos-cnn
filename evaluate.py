@@ -9,9 +9,7 @@ from sklearn.metrics import (
 )
 import matplotlib.pyplot as plt
 
-# =====================
-# 1. CARGAR MODELO Y DATOS
-# =====================
+# Carga del modelo y datos necesarios
 model = keras.models.load_model("model/model.keras")
 
 with open("model/labels.json", "r") as f:
@@ -21,7 +19,7 @@ with open("model/meta.json", "r") as f:
     meta = json.load(f)
     img_size = meta["img_size"]
 
-# Cargar dataset de validación (20% que usaste en entrenamiento)
+# Cargar dataset de validación (20% de entrenamiento)
 val_ds = tf.keras.utils.image_dataset_from_directory(
     "data/raw",
     validation_split=0.2,
@@ -30,12 +28,10 @@ val_ds = tf.keras.utils.image_dataset_from_directory(
     image_size=(img_size, img_size),
     batch_size=32,
     label_mode="int",
-    shuffle=False  # Importante: no mezclar para alinear predicciones
+    shuffle=False  
 )
 
-# =====================
-# 2. OBTENER PREDICCIONES
-# =====================
+# Obtención de predicciones
 y_true = []  # Etiquetas reales
 y_pred = []  # Etiquetas predichas
 
@@ -47,17 +43,15 @@ for images, labels in val_ds:
 y_true = np.array(y_true)
 y_pred = np.array(y_pred)
 
-# =====================
-# 3. CALCULAR MÉTRICAS
-# =====================
+# Cálculo de métricas
 
 # Accuracy general
 accuracy = np.mean(y_true == y_pred)
-print(f"\n✅ Accuracy General: {accuracy:.4f} ({accuracy*100:.2f}%)\n")
+print(f"\nAccuracy General: {accuracy:.4f} ({accuracy*100:.2f}%)\n")
 
 # Classification Report (Precision, Recall, F1 por clase)
 print("=" * 50)
-print("📋 CLASSIFICATION REPORT")
+print("CLASSIFICATION REPORT")
 print("=" * 50)
 report = classification_report(y_true, y_pred, target_names=class_names)
 print(report)
@@ -66,13 +60,11 @@ print(report)
 with open("model/classification_report.txt", "w") as f:
     f.write(f"Accuracy: {accuracy:.4f}\n\n")
     f.write(report)
-print("📁 Reporte guardado en: model/classification_report.txt")
+print("Reporte guardado en: model/classification_report.txt")
 
-# =====================
-# 4. CONFUSION MATRIX
-# =====================
+# Matriz de Confusión
 print("\n" + "=" * 50)
-print("🔢 CONFUSION MATRIX")
+print("CONFUSION MATRIX")
 print("=" * 50)
 
 cm = confusion_matrix(y_true, y_pred)
@@ -87,14 +79,12 @@ plt.xticks(rotation=45, ha="right")
 plt.tight_layout()
 plt.savefig("model/confusion_matrix.png", dpi=150)
 plt.show()
-print("📁 Matriz guardada en: model/confusion_matrix.png")
+print("Matriz guardada en: model/confusion_matrix.png")
 
-# =====================
-# 5. MÉTRICAS POR CLASE (Diccionario)
-# =====================
+# Métricas en formato JSON
 report_dict = classification_report(y_true, y_pred, target_names=class_names, output_dict=True)
 
 # Guardar métricas en JSON
 with open("model/metrics.json", "w") as f:
     json.dump(report_dict, f, indent=2)
-print("📁 Métricas JSON guardadas en: model/metrics.json")
+print("Métricas JSON guardadas en: model/metrics.json")

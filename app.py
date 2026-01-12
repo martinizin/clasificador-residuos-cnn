@@ -19,8 +19,8 @@ def load_artifacts():
 model, labels, meta = load_artifacts()
 IMG_SIZE = int(meta.get("img_size", 224))
 
-st.title("♻️ Clasificador de Residuos (6 clases)")
-st.write("Sube una imagen y el modelo predice: cardboard, glass, metal, paper, plastic, trash.")
+st.title("Clasificador de Residuos con CNN")
+st.write("Sube una imagen y el modelo predice: carton (cardboard), vidrio (glass), metal, papel (paper), plástico (plastic), basura (trash).")
 
 uploaded = st.file_uploader("Sube una imagen (JPG/PNG)", type=["jpg", "jpeg", "png"])
 
